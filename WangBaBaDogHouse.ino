@@ -1,5 +1,4 @@
 
-
 /*
 int ENA = 11;
 int IN1 = 10;
@@ -39,28 +38,46 @@ void loop() {
   }
 */
 #include  <SoftwareSerial.h>
-SoftwareSerial BT(3, 5); // RX | TX
-char val;  // 儲存接收資料的變數
+SoftwareSerial BT(10, 11); // RX | TX
+String message;
   
 void setup()
 {
   
   Serial.begin(9600);
+  Serial.println("BT is ready!");
   BT.begin(9600);
 }
   
 void loop()
 {
-  if(BT.available())
+    while(Serial.available())
   {
-    val = BT.read();
-    Serial.print(val);
+    //while there is data available on the serial monitor
+    message+=char(Serial.read());//store string from serial command
+  }
+  if(!Serial.available())
+  {
+    if(message!="")
+    {
+      //if data is available
+      BT.println(message); //show the data
+      message=""; //clear the data
     }
-  if(Serial.available())
+  }
+    while(BT.available())
   {
-    val = Serial.read();
-    BT.print(val);
-    
+    //while there is data available on the serial monitor
+    message+=char(BT.read());//store string from serial command
+  }
+  if(!BT.available())
+  {
+    if(message!="")
+    {
+      //if data is available
+      Serial.println(message); //show the data
+      message=""; //clear the data
+    }
   }
     
 }
